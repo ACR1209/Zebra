@@ -7,12 +7,17 @@ pub struct Matrix{
     pub data: Vec<Vec<f64>>
 }
 
-// TODO: Redo Error as a its own struct
-#[derive(Debug)]
-enum Error {
-    Type(String),
-    Message(String),
+pub struct Error{
+    pub error_type: String,
+    pub message: String
 }
+
+impl Error {
+    pub fn new(message: String, error_type: String) -> Error {
+        return Error { message: message, error_type: error_type };
+    }
+}
+
 
 impl Matrix {
     // Create a new Matrix by initializing all the values to 0.0
@@ -27,7 +32,7 @@ impl Matrix {
         let data: Vec<Vec<f64>> = Self::parse_data(content.lines(), " ");
         
         if !Self::valid_matrix_contents(&data) {
-            panic!("{:?} {:?}",Error::Type("DimensionError".to_string()), Error::Message("Not a valid matrix!".to_string()))        
+            panic!("{}",Error::new("Not a valid matrix.".to_string(), "DimensionError".to_string()))        
         }
     
         return Matrix { rows: data.len(), cols: data[0].len(), data: data };
@@ -40,7 +45,7 @@ impl Matrix {
         let data: Vec<Vec<f64>> = Self::parse_data(content, ",");
 
         if !Self::valid_matrix_contents(&data) {
-            panic!("{:?} {:?}",Error::Type("DimensionError".to_string()), Error::Message("Not a valid matrix!".to_string()))        
+            panic!("{}",Error::new("Not a valid matrix.".to_string(), "DimensionError".to_string()))        
         }
     
         return Matrix { rows: data.len(), cols: data[0].len(), data: data };
@@ -88,7 +93,8 @@ impl Matrix {
     // Makes the current matrix the identity matrix
     pub fn identity(&mut self){
         if self.cols != self.rows {
-            panic!("{:?} {:?}",Error::Type("DimensionError".to_string()), Error::Message("Not a valid matrix!".to_string()))        
+
+            panic!("{}",Error::new("Not a squared matrix.".to_string(), "DimensionError".to_string()))        
         }
         for r in 0..self.rows  {
             self.data[r][r] = 1.0;
@@ -111,5 +117,11 @@ impl std::fmt::Display for Matrix {
             write!(f, "|\n")?;
         }
         write!(f, "└ {}┘", whitespace)
+    }
+}
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        writeln!(f, "{}: {}", &self.error_type, &self.message)
     }
 }
