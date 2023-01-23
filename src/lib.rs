@@ -7,6 +7,13 @@ pub struct Matrix{
     pub data: Vec<Vec<f64>>
 }
 
+// TODO: Redo Error as a its own struct
+#[derive(Debug)]
+enum Error {
+    Type(String),
+    Message(String),
+}
+
 impl Matrix {
     // Create a new Matrix by initializing all the values to 0.0
     pub fn new(rows: usize, cols: usize) -> Matrix{
@@ -20,7 +27,7 @@ impl Matrix {
         let data: Vec<Vec<f64>> = Self::parse_data(content.lines(), " ");
         
         if !Self::valid_matrix_contents(&data) {
-            panic!("DimensionError: Not a valid matrix.")        
+            panic!("{:?} {:?}",Error::Type("DimensionError".to_string()), Error::Message("Not a valid matrix!".to_string()))        
         }
     
         return Matrix { rows: data.len(), cols: data[0].len(), data: data };
@@ -33,7 +40,7 @@ impl Matrix {
         let data: Vec<Vec<f64>> = Self::parse_data(content, ",");
 
         if !Self::valid_matrix_contents(&data) {
-            panic!("DimensionError: Not a valid matrix.")        
+            panic!("{:?} {:?}",Error::Type("DimensionError".to_string()), Error::Message("Not a valid matrix!".to_string()))        
         }
     
         return Matrix { rows: data.len(), cols: data[0].len(), data: data };
@@ -78,6 +85,15 @@ impl Matrix {
         true
     }
 
+    // Makes the current matrix the identity matrix
+    pub fn identity(&mut self){
+        if self.cols != self.rows {
+            panic!("{:?} {:?}",Error::Type("DimensionError".to_string()), Error::Message("Not a valid matrix!".to_string()))        
+        }
+        for r in 0..self.rows  {
+            self.data[r][r] = 1.0;
+        }
+    }
 
 
 
