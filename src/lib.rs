@@ -314,6 +314,34 @@ impl ops::Sub<Matrix> for Matrix{
     }
 }
 
+impl ops::Mul<f64> for Matrix {
+    type Output = Matrix;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        let mut res = self.copy();
+        for i in 0..self.rows {
+            for j in 0..self.cols  {
+                res.data[i][j] *= rhs;
+            }
+        }
+        return res;
+    }
+}
+
+impl ops::Mul<Matrix> for f64 {
+    type Output = Matrix;
+    fn mul(self, rhs: Matrix) -> Self::Output {
+        let mut res = rhs.copy();
+        for i in 0..rhs.rows {
+            for j in 0..rhs.cols  {
+                res.data[i][j] *= self;
+            }
+        }
+        return res;
+    
+    }
+}
+
 impl ops::Mul<Matrix> for Matrix {
     type Output = Matrix;
 
