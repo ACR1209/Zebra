@@ -1,11 +1,14 @@
-pub struct Error{
+pub struct Error {
     pub error_type: String,
-    pub message: String
+    pub message: String,
 }
 
 impl Error {
     pub fn new(message: String, error_type: String) -> Error {
-        return Error { message: message, error_type: error_type };
+        Error {
+            message,
+            error_type,
+        }
     }
 }
 
